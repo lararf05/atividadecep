@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Endereço</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Função para preencher o endereço automaticamente
+        function buscarEndereco() {
+            var cep = document.getElementById("cep").value.replace("-", "").trim();
+            
+            if (cep.length == 8) {
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.erro) {
+                            document.getElementById("logradouro").value = data.logradouro;
+                            document.getElementById("bairro").value = data.bairro;
+                            document.getElementById("cidade").value = data.localidade;
+                            document.getElementById("estado").value = data.uf;
+                        } else {
+                            alert("CEP não encontrado.");
+                        }
+                    })
+                    .catch(error => alert("Erro ao buscar o endereço."));
+            } else {
+                alert("CEP inválido. O CEP deve ter 8 dígitos.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Formulário de Endereço</h2>
+        <form>
+            <label for="cep">CEP:</label>
+            <input type="text" id="cep" name="cep" maxlength="9" oninput="this.value=this.value.replace(/[^\d]/g,'')" placeholder="00000-000" required>
+            <button type="button" onclick="buscarEndereco()">Buscar Endereço</button>
+
+            <label for="logradouro">Logradouro:</label>
+            <input type="text" id="logradouro" name="logradouro" required>
+
+            <label for="bairro">Bairro:</label>
+            <input type="text" id="bairro" name="bairro" required>
+
+            <label for="cidade">Cidade:</label>
+            <input type="text" id="cidade" name="cidade" required>
+
+            <label for="estado">Estado:</label>
+            <input type="text" id="estado" name="estado" required>
+
+            <input type="submit" value="Enviar">
+        </form>
+    </div>
+</body>
+</html>
